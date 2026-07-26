@@ -23,7 +23,7 @@ import com.appointment.service.AuthService;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 	@Autowired AuthService authService;
 	   @PostMapping("/register")
