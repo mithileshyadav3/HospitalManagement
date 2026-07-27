@@ -55,4 +55,8 @@ public class DepartmentController {
 		        return ResponseEntity.ok(departmentResponse);
 		         
 	   }
+	 @GetMapping("/test")
+	 public String test() {
+		 return "Tested";
+	 }
 }

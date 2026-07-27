@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.admin.dto.DepartmentRequest;
-import com.admin.dto.DepartmentResponse;
 import com.admin.dto.MedicalserviceRequest;
 import com.admin.dto.MedicalserviceResponse;
 import com.admin.service.ServiceOfMedical;
@@ -47,7 +45,7 @@ public class MedicalserviceController {
 		        return ResponseEntity.ok("Delete success");
 		         }
 	 
-	 @GetMapping("/search/keyword")
+	 @GetMapping("/search/{keyword}")
 
 	   public ResponseEntity<List<MedicalserviceResponse>>medicalSearch(@PathVariable String keyword){
 		      List< MedicalserviceResponse> medicalresponse=serviceOfMedical.searchMedical(keyword);
