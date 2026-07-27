@@ -15,6 +15,7 @@ import com.appointment.dto.JwtResponse;
 import com.appointment.dto.LoginRequest;
 import com.appointment.dto.RegisterRequest;
 import com.appointment.dto.RegisterResponse;
+import com.appointment.dto.UpdateRequest;
 import com.appointment.entity.Role;
 import com.appointment.entity.User;
 import com.appointment.repo.UserRepo;
@@ -57,7 +58,7 @@ public class AuthService {
 				  .toList();
 		 
 	}
-	public RegisterResponse updatingUsers(Long id,RegisterRequest updateRequest) {
+	public RegisterResponse updatingUsers(Long id,UpdateRequest updateRequest) {
 		// TODO Auto-generated method stub
 	               User user=userRepo.findById(id).orElseThrow(()->new RuntimeException("id not found"));
 	           mapper.map(updateRequest,user);
