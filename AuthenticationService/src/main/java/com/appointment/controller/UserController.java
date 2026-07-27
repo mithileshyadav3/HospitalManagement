@@ -19,11 +19,12 @@ import com.appointment.dto.JwtResponse;
 import com.appointment.dto.LoginRequest;
 import com.appointment.dto.RegisterRequest;
 import com.appointment.dto.RegisterResponse;
+import com.appointment.dto.UpdateRequest;
 import com.appointment.service.AuthService;
 
 @RestController
 @RequestMapping("/users")
-//@CrossOrigin(origins = "http://localhost:4200")
+
 public class UserController {
 	@Autowired AuthService authService;
 	   @PostMapping("/register")
@@ -45,7 +46,7 @@ public class UserController {
 		   return ResponseEntity.ok(registerResponse);
 	   }
 	   @PutMapping("/update/{id}")
-	   public ResponseEntity<RegisterResponse>updateUsers(@PathVariable Long id,  @RequestBody RegisterRequest updateRequest)
+	   public ResponseEntity<RegisterResponse>updateUsers(@PathVariable Long id,  @RequestBody UpdateRequest updateRequest)
 	   {
 	       RegisterResponse registerResponse=authService.updatingUsers(id,updateRequest);
 	        return ResponseEntity.status(HttpStatus.OK).body(registerResponse);
