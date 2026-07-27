@@ -19,7 +19,7 @@ public class MedicalService {
     private String status;
      @ManyToOne
      @JoinColumn(name="department_id")
-    private Long departmentId;
+    private Department department;
 	 public Long getId() {
 		 return id;
 	 }
@@ -50,12 +50,13 @@ public class MedicalService {
 	 public void setStatus(String status) {
 		 this.status = status;
 	 }
-	 public Long getDepartmentId() {
-		 return departmentId;
+	 public Department getDepartment() {
+		 return department;
 	 }
-	 public void setDepartmentId(Long departmentId) {
-		 this.departmentId = departmentId;
+	 public void setDepartment(Department department) {
+		 this.department = department;
 	 }
+	
      
     
 }
