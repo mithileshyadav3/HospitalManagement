@@ -1,11 +1,9 @@
-package com.admin.dto;
+package com.customer.dto;
 
 
 
-
-
-public class MedicalserviceResponse {
-	     private Long id;
+public class MedicalServiceResponse {
+	 private Long id;
 
 	    private String serviceName;
 
@@ -64,5 +62,4 @@ public class MedicalserviceResponse {
 		public void setDepartmentId(Long departmentId) {
 			this.departmentId = departmentId;
 		}
-	    
 }

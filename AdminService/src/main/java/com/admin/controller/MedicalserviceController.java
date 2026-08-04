@@ -33,6 +33,12 @@ public class MedicalserviceController {
 		        return ResponseEntity.ok(medicalresponse);
 		         
 	   }
+	 @GetMapping("/onemedical/{id}")
+	 public ResponseEntity<MedicalserviceResponse>oneMedical(@PathVariable Long id){
+	       MedicalserviceResponse medicalresponse=serviceOfMedical.medicalOne(id);
+	        return ResponseEntity.ok(medicalresponse);
+	         
+ }
 	 @PutMapping("/update/{id}")
 	   public ResponseEntity<MedicalserviceResponse>updateMedical(@PathVariable Long id,@RequestBody MedicalserviceRequest medicalserviceRequest){
 		       MedicalserviceResponse medicalresponse=serviceOfMedical.medicalUpdate(id,medicalserviceRequest);
@@ -52,4 +58,10 @@ public class MedicalserviceController {
 		        return ResponseEntity.ok(medicalresponse);
 		         
 	   }
+	 // all medical service according to their departments
+	 @GetMapping("/department/{id}")
+	 public ResponseEntity<List<MedicalserviceResponse>>medicalAcctoDepartment(@PathVariable Long id){
+		 List<MedicalserviceResponse>responses=serviceOfMedical.medicalwithDepartment(id);
+		 return ResponseEntity.ok(responses);
+	 }
 }

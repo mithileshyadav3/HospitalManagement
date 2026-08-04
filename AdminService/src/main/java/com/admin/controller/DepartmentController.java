@@ -36,6 +36,13 @@ public class DepartmentController {
 		        return ResponseEntity.ok(departmentResponse);
 		         
 	   }
+	 @GetMapping("/onedepartment/{id}")
+	 public ResponseEntity<DepartmentResponse>oneDepartment(@PathVariable Long id){
+	       DepartmentResponse departmentResponse=departmentService.departmentOne(id);
+	        return ResponseEntity.ok(departmentResponse);
+	         
+ }
+	 
 	 @PutMapping("/update/{id}")
 	   public ResponseEntity<DepartmentResponse>updateDepart(@PathVariable Long id,@RequestBody DepartmentRequest departmentRequest){
 		       DepartmentResponse departmentResponse=departmentService.update(id,departmentRequest);

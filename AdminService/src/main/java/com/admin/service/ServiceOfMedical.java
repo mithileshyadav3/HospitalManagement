@@ -20,6 +20,7 @@ public class ServiceOfMedical {
    @Autowired MedicalRepo medicalRepo;
 	public MedicalserviceResponse Add(MedicalserviceRequest request) {
 		// TODO Auto-generated method stub
+		 System.out.println("Department Id = " + request.getDepartmentId());
 		Department department = departmentRepo.findById(request.getDepartmentId())
 		        .orElseThrow(() -> new RuntimeException("Department not found"));
 
@@ -79,6 +80,22 @@ public class ServiceOfMedical {
 				.map(service->mapper.map(service, MedicalserviceResponse.class))
 				.toList();
 		
+	}
+
+	public MedicalserviceResponse medicalOne(Long id) {
+		// TODO Auto-generated method stub
+		 // Fetch Department from DB
+		 MedicalService response= medicalRepo.findById(id).orElseThrow(()->new RuntimeException("medical service id doesn't exit"));
+
+		return mapper.map(response, MedicalserviceResponse.class);
+	}
+
+	public List<MedicalserviceResponse> medicalwithDepartment(Long id) {
+		// TODO Auto-generated method stub
+		        List<MedicalService>medicalServices=medicalRepo.findByDepartmentId(id);
+		        return medicalServices.stream()
+		        		.map(mdservice->mapper.map(mdservice, MedicalserviceResponse.class))
+		        		.toList();
 	}
 
 }

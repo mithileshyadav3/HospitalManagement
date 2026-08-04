@@ -3,6 +3,7 @@ package com.appointment.dto;
 public class JwtResponse {
      private String token;
      private String role;
+     
 	  
 	 public String getToken() {
 		 return token;

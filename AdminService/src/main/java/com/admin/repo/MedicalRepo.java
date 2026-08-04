@@ -9,4 +9,5 @@ import com.admin.entity.MedicalService;
 @Repository
 public interface MedicalRepo extends JpaRepository<MedicalService, Long> {
 	List<MedicalService> findByServiceNameContainingIgnoreCase(String keyword);
+	  List<MedicalService>findByDepartmentId(Long id);
 }
