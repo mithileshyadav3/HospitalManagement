@@ -48,11 +48,17 @@ public class DepartmentService {
 
 	public List<DepartmentResponse> departSearch(String keyword) {
 		// TODO Auto-generated method stub
-		   List<Department>departments= departmentRepo.findByDepartmentName(keyword);
+		   List<Department>departments= departmentRepo.findByDepartmentNameContainingIgnoreCase(keyword);
 		   
 		return departments.stream()
 				.map(depart->mapper.map(depart, DepartmentResponse.class))
 				.toList();
+	}
+
+	public DepartmentResponse departmentOne(Long id) {
+		// TODO Auto-generated method stub
+		  Department department=departmentRepo.findById(id).orElseThrow(()->new RuntimeException("Department id not found"));
+		return mapper.map(department, DepartmentResponse.class);
 	}
 
 }

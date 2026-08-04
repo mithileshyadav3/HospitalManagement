@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 import com.admin.entity.Department;
 @Repository
 public interface DepartmentRepo extends JpaRepository<Department,Long> {
-     List<Department>findByDepartmentName(String keyword);
+     List<Department>findByDepartmentNameContainingIgnoreCase(String keyword);
 }
