@@ -3,6 +3,7 @@ package com.customer.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,22 @@ public class AppointmentService {
 	                }
 	            appointmentRepo.deleteById(id);    
 	                
+   }
+   public List<AppointmentResponse> Appointmentsearch(String name) {
+	// TODO Auto-generated method stub
+	          List<Appointment>appointments=appointmentRepo.findByPatientnameContainingIgnoreCase(name);
+	          if(appointments==null) {
+	        	  throw new RuntimeException("No Search Found");
+	          }
+	return  appointments.stream()
+			.map(app->mapper.map(app, AppointmentResponse.class))
+			.toList();
+   }
+   public AppointmentResponse cancelAppointment(Long id) {
+	// TODO Auto-generated method stub
+	          Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new RuntimeException("appointment id doesn't exists"));
+	           appointment.setStatus("CANCELLED");
+	     Appointment updateAppointment=      appointmentRepo.save(appointment);
+	return mapper.map(updateAppointment, AppointmentResponse.class);
    }
 }

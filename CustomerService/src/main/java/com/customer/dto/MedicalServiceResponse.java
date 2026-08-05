@@ -3,7 +3,7 @@ package com.customer.dto;
 
 
 public class MedicalServiceResponse {
-	 private Long id;
+	    private Long id;
 
 	    private String serviceName;
 

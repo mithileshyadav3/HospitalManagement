@@ -8,6 +8,7 @@ public class AppointmentResponse {
 	    private String status;
 	    private LocalDate appointmentDate;
 	    private String patientName; 
+	    private String remarks;
 		public Long getAppointmentId() {
 			return appointmentId;
 		}
@@ -40,5 +41,12 @@ public class AppointmentResponse {
 		public void setPatientName(String patientName) {
 			this.patientName = patientName;
 		}
+		public String getRemarks() {
+			return remarks;
+		}
+		public void setRemarks(String remarks) {
+			this.remarks = remarks;
+		}
+		
 	    
 }

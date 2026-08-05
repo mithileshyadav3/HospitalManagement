@@ -45,5 +45,15 @@ public class AppointmentController {
         	          appointmentService.deleteAppointment(id);
         	       return   "Deleted Appointment Success";
         }
+        @GetMapping("/search/{name}")
+        public ResponseEntity<List<AppointmentResponse>>searchallAppointment(@PathVariable String name){
+      	  List<AppointmentResponse>responses=appointmentService.Appointmentsearch(name);
+      	  return ResponseEntity.ok(responses);
+        }
+        @PutMapping("/cancel/{id}")
+        public ResponseEntity<AppointmentResponse> cancelAppointment(@PathVariable Long id) {
+
+            return ResponseEntity.ok(appointmentService.cancelAppointment(id));
+        }
         
 }
