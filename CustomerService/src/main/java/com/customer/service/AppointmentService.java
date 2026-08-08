@@ -1,6 +1,7 @@
 package com.customer.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
@@ -23,7 +24,6 @@ public class AppointmentService {
        @Autowired ModelMapper mapper;
 	public AppointmentResponse appointmentAdd(AppointmentRequest appointmentRequest) {
 		// TODO Auto-generated method stub
-		                 
 		      DepartmentResponse departmentResponse=adminClients.oneDepartment(appointmentRequest.getDepartmentId());
 		         if(departmentResponse==null) {
 		        	 throw new RuntimeException("Department id doesn't exists");
@@ -44,12 +44,18 @@ public class AppointmentService {
 		        appointment.setServiceId(appointmentRequest.getServiceId());
 		        appointment.setAppointmentDate(appointmentRequest.getAppointmentDate());
 		        appointment.setRemarks(appointmentRequest.getRemarks());
+		        appointment.setAddress(appointmentRequest.getAddress());
+		        appointment.setSex(appointmentRequest.getSex());
+		        appointment.setAge(appointmentRequest.getAge());
 		        String token=generateToken(appointmentRequest.getAppointmentDate());
 		        appointment.setTokenNumber(token);
 		        appointment.setStatus("WAITING");
 		        appointment.setPatientname(appointmentRequest.getPatientname()); //note patientname instead of patientid in table but in real patients name
 		   Appointment appointment2=    appointmentRepo.save(appointment);
-		 return  mapper.map(appointment2,AppointmentResponse.class);		      
+		 AppointmentResponse appointmentResponse=  mapper.map(appointment2,AppointmentResponse.class);	
+		       appointmentResponse.setDepartname(departmentResponse.getDepartmentName());
+		       appointmentResponse.setMedicalservicename(medicalServiceResponse.getServiceName());
+		      return appointmentResponse;
 	}
    public String generateToken(LocalDate date) {
 	        long count=appointmentRepo.countByAppointmentDate(date);
@@ -76,13 +82,34 @@ public class AppointmentService {
 	return mapper.map(appointment,AppointmentResponse.class);
    }
    public List<AppointmentResponse> allAppointment() {
-	// TODO Auto-generated method stub
-	    List<Appointment>appointments=appointmentRepo.findAll();
-	    
-	return appointments.stream()
-			.map(appointed->mapper.map(appointed, AppointmentResponse.class))
-			.toList();
-   }
+
+	    List<Appointment> appointments = appointmentRepo.findAll();
+
+	    List<AppointmentResponse> responses = new ArrayList<>();
+
+	    for (Appointment appointment : appointments) {
+
+	        // Get Department using Feign
+	        DepartmentResponse department =
+	                adminClients.oneDepartment(appointment.getDepartmentId());
+
+	        // Get Medical Service using Feign
+	        MedicalServiceResponse medical =
+	                adminClients.oneMedical(appointment.getServiceId());
+
+	        // Map common fields
+	        AppointmentResponse response =
+	                mapper.map(appointment, AppointmentResponse.class);
+
+	        // Set extra fields
+	        response.setDepartname(department.getDepartmentName());
+	        response.setMedicalservicename(medical.getServiceName());
+
+	        responses.add(response);
+	    }
+
+	    return responses;
+	}
    public void deleteAppointment(Long id) {
 	// TODO Auto-generated method stub
 	                if(!appointmentRepo.existsById(id)) {
@@ -105,7 +132,7 @@ public class AppointmentService {
 	// TODO Auto-generated method stub
 	          Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new RuntimeException("appointment id doesn't exists"));
 	           appointment.setStatus("CANCELLED");
-	     Appointment updateAppointment=      appointmentRepo.save(appointment);
+	     Appointment updateAppointment=appointmentRepo.save(appointment);
 	return mapper.map(updateAppointment, AppointmentResponse.class);
    }
 }

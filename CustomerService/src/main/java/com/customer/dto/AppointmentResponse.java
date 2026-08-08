@@ -9,6 +9,11 @@ public class AppointmentResponse {
 	    private LocalDate appointmentDate;
 	    private String patientName; 
 	    private String remarks;
+	    private String departname;
+	    private String medicalservicename;
+	    private Long age;
+	    private String sex;
+	    private String address;
 		public Long getAppointmentId() {
 			return appointmentId;
 		}
@@ -46,6 +51,36 @@ public class AppointmentResponse {
 		}
 		public void setRemarks(String remarks) {
 			this.remarks = remarks;
+		}
+		public Long getAge() {
+			return age;
+		}
+		public void setAge(Long age) {
+			this.age = age;
+		}
+		public String getSex() {
+			return sex;
+		}
+		public void setSex(String sex) {
+			this.sex = sex;
+		}
+		public String getAddress() {
+			return address;
+		}
+		public void setAddress(String address) {
+			this.address = address;
+		}
+		public String getDepartname() {
+			return departname;
+		}
+		public void setDepartname(String departname) {
+			this.departname = departname;
+		}
+		public String getMedicalservicename() {
+			return medicalservicename;
+		}
+		public void setMedicalservicename(String medicalservicename) {
+			this.medicalservicename = medicalservicename;
 		}
 		
 	    
