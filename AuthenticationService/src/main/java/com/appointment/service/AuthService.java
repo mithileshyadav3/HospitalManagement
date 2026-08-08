@@ -83,5 +83,10 @@ public class AuthService {
 		    }
 		throw new RuntimeException("This Name isn't present in list");
 	}
+	public RegisterResponse userOne(Long id) {
+		// TODO Auto-generated method stub
+		 User user=userRepo.findById(id).orElseThrow(()->new RuntimeException("id not found"));
+		 return mapper.map(user,RegisterResponse.class);
+	}
 
 }

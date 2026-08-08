@@ -26,7 +26,13 @@ public class Appointment {
     private String status;
 
     private String remarks;
+    private Long age;
+    private String sex;
+    private String address;
+    
+    private String doctorName;
 
+    private String counterName; 
 	public Long getId() {
 		return id;
 	}
@@ -93,6 +99,47 @@ public class Appointment {
 		this.remarks = remarks;
 	}
 
+	public Long getAge() {
+		return age;
+	}
+
+	public void setAge(Long age) {
+		this.age = age;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getDoctorName() {
+		return doctorName;
+	}
+
+	public void setDoctorName(String doctorName) {
+		this.doctorName = doctorName;
+	}
+
+	public String getCounterName() {
+		return counterName;
+	}
+
+	public void setCounterName(String counterName) {
+		this.counterName = counterName;
+	}
+	
+    
     // Getters and Setters
     
 }

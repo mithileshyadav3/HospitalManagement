@@ -62,6 +62,11 @@ public class UserController {
 	       List<RegisterResponse> registerResponse=authService.searchingName(name);
 	        return ResponseEntity.ok(registerResponse);
 	   }
+	   @GetMapping("/oneuser/{id}")
+	   public ResponseEntity<RegisterResponse>oneUser(@PathVariable Long id){
+		   RegisterResponse response=authService.userOne(id);
+		   return ResponseEntity.ok(response);
+	   }
 	   
 }
 	         

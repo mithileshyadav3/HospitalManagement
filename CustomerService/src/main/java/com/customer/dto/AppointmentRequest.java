@@ -9,6 +9,9 @@ public class AppointmentRequest {
 	    private LocalDate appointmentDate;
 	    private String remarks;
 		private String patientname;
+		 private Long age;
+		    private String sex;
+		    private String address;
 		public Long getDepartmentId() {
 			return departmentId;
 		}
@@ -38,6 +41,24 @@ public class AppointmentRequest {
 		}
 		public void setPatientname(String patientname) {
 			this.patientname = patientname;
+		}
+		public Long getAge() {
+			return age;
+		}
+		public void setAge(Long age) {
+			this.age = age;
+		}
+		public String getSex() {
+			return sex;
+		}
+		public void setSex(String sex) {
+			this.sex = sex;
+		}
+		public String getAddress() {
+			return address;
+		}
+		public void setAddress(String address) {
+			this.address = address;
 		}
 		
 	    
