@@ -45,6 +45,7 @@ public class AuthService {
 			   JwtResponse response=new JwtResponse();
 			   response.setRole(users.getRole().name());			     
 			   response.setToken(token);
+			   response.setUserID(users.getId());
 			   return response;
 			 		  }
 		  

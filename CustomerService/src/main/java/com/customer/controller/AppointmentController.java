@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.customer.dto.AppointmentRequest;
 import com.customer.dto.AppointmentResponse;
+import com.customer.dto.AppointmentStatusRequest;
+import com.customer.dto.QueueDashboardResponse;
 import com.customer.service.AppointmentService;
 
 @RestController
@@ -55,5 +57,28 @@ public class AppointmentController {
 
             return ResponseEntity.ok(appointmentService.cancelAppointment(id));
         }
-        
+        //for the change of status
+        @PutMapping("/changestatus/{id}")
+        public ResponseEntity<AppointmentResponse>updateStatus(@PathVariable Long id,@RequestBody AppointmentStatusRequest statusRequest){
+        	         AppointmentResponse response=appointmentService.statusUpdate(id,statusRequest);
+        	         return  ResponseEntity.ok(response);      
+        	        		 
+        }
+        @GetMapping("/queue-dashboard")
+        public ResponseEntity<QueueDashboardResponse>calcutAppointment(){
+        	return ResponseEntity.ok(appointmentService.calAppointment());
+        }
+        @GetMapping("/call-next")
+        public ResponseEntity<AppointmentResponse> callNext() {
+
+            AppointmentResponse response =
+                    appointmentService.callNext();
+
+            return ResponseEntity.ok(response);
+        }
+        @GetMapping("/bydepartment/{staffid}")
+        public ResponseEntity<List<AppointmentResponse>>searchBydeparmentId(@PathVariable long staffid){
+        	  List<AppointmentResponse>responses=appointmentService.DepartmentIdSearch(staffid);
+        	  return ResponseEntity.ok(responses);
+          }
 }
