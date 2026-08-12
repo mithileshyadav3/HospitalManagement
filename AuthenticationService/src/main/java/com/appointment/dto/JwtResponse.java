@@ -3,7 +3,7 @@ package com.appointment.dto;
 public class JwtResponse {
      private String token;
      private String role;
-     
+     private long userID;
 	  
 	 public String getToken() {
 		 return token;
@@ -16,6 +16,12 @@ public class JwtResponse {
 	 }
 	 public void setRole(String role) {
 		 this.role = role;
+	 }
+	 public long getUserID() {
+		 return userID;
+	 }
+	 public void setUserID(long userID) {
+		 this.userID = userID;
 	 }
 	 
      

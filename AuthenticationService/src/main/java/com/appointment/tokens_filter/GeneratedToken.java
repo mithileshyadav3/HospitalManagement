@@ -25,17 +25,22 @@ public class GeneratedToken {
 	}
 
 	public String generateToken(User user) {
-		Map<String,Object>claims=new HashMap<>();
-		 claims.put("role", user.getRole().name());
-		return Jwts.builder()
-				   .header().add("TYP","JWT")
-				   .and()
-				   .claim("role", user.getRole().name())
-				    .subject(user.getUsername())
-				   .issuedAt(new Date(System.currentTimeMillis()))
-				   .expiration(new Date(System.currentTimeMillis()+1000*60*60*5))
-				   .signWith(getKey(),SignatureAlgorithm.HS256)
-				   .compact();
+
+	    Map<String, Object> claims = new HashMap<>();
+
+	    claims.put("role", user.getRole().name());
+	    claims.put("userID", user.getId());
+
+	    return Jwts.builder()
+	            .header()
+	                .add("TYP", "JWT")
+	            .and()
+	            .claims(claims)
+	            .subject(user.getUsername())
+	            .issuedAt(new Date(System.currentTimeMillis()))
+	            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 5))
+	            .signWith(getKey(), SignatureAlgorithm.HS256)
+	            .compact();
 	}
 	public Key getKey() {
 		  byte[] decode=Base64.getDecoder().decode(SecurityConstants.SECRET_KEY);
