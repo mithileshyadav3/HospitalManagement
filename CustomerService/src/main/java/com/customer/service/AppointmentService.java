@@ -216,7 +216,7 @@ private final AdminClientService adminClientService;
 //	         }
 	   List<Appointment>appointments=appointmentRepo.findByDepartmentId(id);
        if(appointments==null) {
-     	  throw new CustomerNotFoundException("No Deparment Assign to the Counter");
+     	  throw new CustomerNotFoundException("No Deparment  id Assign to the Counter" );
        }
    
 return  appointments.stream()
