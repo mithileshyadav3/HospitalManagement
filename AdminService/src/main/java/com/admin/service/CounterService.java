@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.admin.exception.BadRequestException;
+import com.admin.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,10 +31,10 @@ public class CounterService {
 	// TODO Auto-generated method stub
 	       
 	       Department department=departmentRepo.findById(counterRequest.getDepartmentId()).orElseThrow(()->
-	       new RuntimeException("department id doesn't exists"));
+	       new ResourceNotFoundException("department id doesn't exists"));
 	           RegisterResponse registerResponse= clients.oneUser(counterRequest.getStaffId());
 	           if(registerResponse==null) {
-	        	   throw new RuntimeException("staff or user id doesn't exists");
+	        	   throw new ResourceNotFoundException("staff or user id doesn't exists");
 	           }
 	        // Check whether staff is already assigned
 	           Optional<Counter> existingCounter =
@@ -42,7 +44,7 @@ public class CounterService {
 
 	               Counter oldCounter = existingCounter.get();
 
-	               throw new RuntimeException(
+	               throw new BadRequestException(
 	                   "Staff is already assigned to Department ID "
 	                   + oldCounter.getDepartmentId()
 	               );
@@ -64,10 +66,10 @@ public class CounterService {
 	        List<CounterResponse>responses=new ArrayList<>();
 	       for(Counter counter:counterResponses) {
 	    	   Department department=departmentRepo.findById(counter.getDepartmentId()).orElseThrow(()->
-		       new RuntimeException("department id doesn't exists"));
+		       new ResourceNotFoundException("department id doesn't exists"));
 		           RegisterResponse registerResponse= clients.oneUser(counter.getStaffId());
 		           if(registerResponse==null) {
-		        	   throw new RuntimeException("staff or user id doesn't exists");
+		        	   throw new ResourceNotFoundException("staff or user id doesn't exists");
 		           }
 		           CounterResponse res=mapper.map(counter,CounterResponse.class);
 		           res.setDepartmentName(department.getDepartmentName());
@@ -79,13 +81,13 @@ public class CounterService {
    }
    public CounterResponse counterOne(long id) {
 	// TODO Auto-generated method stub
-	      Counter counter= counterRepo.findById(id).orElseThrow(()->new RuntimeException("counter id doesn't exists"));
+	      Counter counter= counterRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("counter id doesn't exists"));
 	         
 	      return mapper.map(counter, CounterResponse.class);
    }
    public CounterResponse counterAllBystaff(Long id) {
 	// TODO Auto-generated method stub
-	    Counter responseCounters=counterRepo.findByStaffId(id).orElseThrow(()->new RuntimeException("staff id doesn't exists"));
+	    Counter responseCounters=counterRepo.findByStaffId(id).orElseThrow(()->new ResourceNotFoundException("staff id doesn't exists"));
 	    
 	    return mapper.map(responseCounters, CounterResponse.class);
    }

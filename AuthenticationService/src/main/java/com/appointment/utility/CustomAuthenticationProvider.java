@@ -19,10 +19,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		// TODO Auto-generated method stub
 		   String username=authentication.getName();
 		      UserDetails userDetails=customUseDetailsService.loadUserByUsername(username);
-		       if(passwordEncoder.matches(authentication.getCredentials().toString(),userDetails.getPassword())) {
+		String password = authentication.getCredentials().toString();
+
+		if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+			throw new BadCredentialsException("Password is invalid");
+		}
+
 		    	 return   new UsernamePasswordAuthenticationToken(userDetails.getUsername(),null,userDetails.getAuthorities());
-		       }
-		throw new BadCredentialsException("Password is invalid");
+
 	}
 
 	@Override

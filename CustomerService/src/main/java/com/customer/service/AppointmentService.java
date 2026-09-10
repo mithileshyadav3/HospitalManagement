@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.customer.exception.CustomerNotFoundException;
+import com.customer.exception.InvalidCredential;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.apache.hc.client5.http.auth.AuthStateCacheable;
 import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.customer.clients.AdminClients;
@@ -15,31 +20,47 @@ import com.customer.clients.AdminClients;
 import com.customer.dto.AppointmentRequest;
 import com.customer.dto.AppointmentResponse;
 import com.customer.dto.AppointmentStatusRequest;
+import com.customer.dto.AppointmentUpdate;
 import com.customer.dto.CounterResponse;
 import com.customer.dto.DepartmentResponse;
 import com.customer.dto.MedicalServiceResponse;
 import com.customer.dto.QueueDashboardResponse;
 import com.customer.entity.Appointment;
 import com.customer.repo.PatientRepo;
+
+
 @Service
-public class AppointmentService {
-        @Autowired AdminClients adminClients;
-       @Autowired PatientRepo appointmentRepo;
+public class  AppointmentService {
+
+private final AdminClientService adminClientService;
+
+	public AppointmentService(AdminClientService adminClientService) {
+		this.adminClientService = adminClientService;
+	}
+	@Autowired
+
+	AdminClients adminClients;
+
+	@Autowired PatientRepo appointmentRepo;
        @Autowired ModelMapper mapper;
+       @Autowired
+       private SimpMessagingTemplate messagingTemplate;
 	public AppointmentResponse appointmentAdd(AppointmentRequest appointmentRequest) {
 		// TODO Auto-generated method stub
-		      DepartmentResponse departmentResponse=adminClients.oneDepartment(appointmentRequest.getDepartmentId());
+		      DepartmentResponse departmentResponse=adminClientService.getDepartment(
+					  appointmentRequest.getDepartmentId()
+			  );;
 		         if(departmentResponse==null) {
-		        	 throw new RuntimeException("Department id doesn't exists");
+		        	 throw new CustomerNotFoundException("Department id doesn't exists");
 		         }
 		      
 		      MedicalServiceResponse medicalServiceResponse=adminClients.oneMedical(appointmentRequest.getServiceId());
 		        if(medicalServiceResponse==null) {
-		        	 throw new RuntimeException("Medical service  id doesn't exists");
+		        	 throw new CustomerNotFoundException("Medical service  id doesn't exists");
 		        }
 		        
 		        if (!medicalServiceResponse.getDepartmentId().equals(departmentResponse.getId())) {
-		            throw new RuntimeException("Medical Service does not belong to the selected Department.");
+		            throw new InvalidCredential("Medical Service does not belong to the selected Department.");
 		        }
 		        Appointment appointment = new Appointment();
 
@@ -69,14 +90,14 @@ public class AppointmentService {
 	// TODO Auto-generated method stub
 	    DepartmentResponse departmentResponse=adminClients.oneDepartment(updaterequest.getDepartmentId());
         if(departmentResponse==null) {
-       	 throw new RuntimeException("Department id doesn't exists");
+       	 throw new CustomerNotFoundException("Department id doesn't exists");
         }
      
      MedicalServiceResponse medicalServiceResponse=adminClients.oneMedical(updaterequest.getServiceId());
        if(medicalServiceResponse==null) {
-       	 throw new RuntimeException("Medical service  id doesn't exists");
+       	 throw new CustomerNotFoundException("Medical service  id doesn't exists");
        }
-	              Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new RuntimeException("appointment id doesn't exists"));
+	              Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new CustomerNotFoundException("appointment id doesn't exists"));
 	             appointment.setAppointmentDate(updaterequest.getAppointmentDate());  
 	             appointment.setPatientname(updaterequest.getPatientname());
 	             appointment.setDepartmentId(updaterequest.getDepartmentId());
@@ -94,8 +115,12 @@ public class AppointmentService {
 	    for (Appointment appointment : appointments) {
 
 	        // Get Department using Feign
-	        DepartmentResponse department =
-	                adminClients.oneDepartment(appointment.getDepartmentId());
+
+					DepartmentResponse department =
+					adminClientService.getDepartment(
+							appointment.getDepartmentId()
+					);;
+
 
 	        // Get Medical Service using Feign
 	        MedicalServiceResponse medical =
@@ -117,7 +142,7 @@ public class AppointmentService {
    public void deleteAppointment(Long id) {
 	// TODO Auto-generated method stub
 	                if(!appointmentRepo.existsById(id)) {
-	                	throw new RuntimeException("appointment id doesn't exits");
+	                	throw new CustomerNotFoundException("appointment id doesn't exits");
 	                }
 	            appointmentRepo.deleteById(id);    
 	                
@@ -126,22 +151,28 @@ public class AppointmentService {
 	// TODO Auto-generated method stub
 	          List<Appointment>appointments=appointmentRepo.findByPatientnameContainingIgnoreCase(name);
 	          if(appointments==null) {
-	        	  throw new RuntimeException("No Search Found");
+	        	  throw new CustomerNotFoundException("No Search Found");
 	          }
 	return  appointments.stream()
 			.map(app->mapper.map(app, AppointmentResponse.class))
 			.toList();
    }
-   public AppointmentResponse cancelAppointment(Long id) {
+   public AppointmentResponse cancelAppointment(Long id,String status) {
 	// TODO Auto-generated method stub
-	          Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new RuntimeException("appointment id doesn't exists"));
-	           appointment.setStatus("CANCELLED");
+	          Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new CustomerNotFoundException("appointment id doesn't exists"));
+//	           appointment.setStatus("CANCELLED");
+	           appointment.setStatus(status);
 	     Appointment updateAppointment=appointmentRepo.save(appointment);
+	     AppointmentUpdate update=new AppointmentUpdate();
+         update.setAppointmentId(appointment.getId());
+         update.setStatus(appointment.getStatus());
+         update.setToken(appointment.getTokenNumber());
+	          messagingTemplate.convertAndSend("/topic/appointments",update);
 	return mapper.map(updateAppointment, AppointmentResponse.class);
    }
    public AppointmentResponse statusUpdate(Long id, AppointmentStatusRequest statusRequest) {
 	// TODO Auto-generated method stub
-	   Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new RuntimeException("appointment id doesn't exists"));
+	   Appointment appointment=appointmentRepo.findById(id).orElseThrow(()->new CustomerNotFoundException("appointment id doesn't exists"));
        appointment.setStatus(statusRequest.getStatus());
 	  Appointment updateAppointment=appointmentRepo.save(appointment);
 	return mapper.map(updateAppointment, AppointmentResponse.class);
@@ -169,7 +200,7 @@ public class AppointmentService {
 	     Optional<Appointment>nextappointment=   
 	    		 appointmentRepo.findFirstByAppointmentDateAndStatusOrderByIdAsc(today, "WAITING");
 	     if(nextappointment.isEmpty()) {
-	    	 throw new RuntimeException("No waiting patient ");
+	    	 throw new CustomerNotFoundException("No waiting patient ");
 	     }
 	    Appointment appointment=   nextappointment.get();
 	     appointment.setStatus("IN_PROGRESS");
@@ -185,11 +216,20 @@ public class AppointmentService {
 //	         }
 	   List<Appointment>appointments=appointmentRepo.findByDepartmentId(id);
        if(appointments==null) {
-     	  throw new RuntimeException("No Deparment Assign to the Counter");
+     	  throw new CustomerNotFoundException("No Deparment Assign to the Counter");
        }
    
 return  appointments.stream()
 		.map(app->mapper.map(app, AppointmentResponse.class))
 		.toList();
    }
+
+
+
+
+
+
+
+
+
 }

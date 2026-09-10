@@ -1,5 +1,6 @@
 package com.customer.clients;
 
+//import com.customer.fallback.Fallback;
 import org.springframework.cloud.openfeign.FeignClient;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +10,9 @@ import com.customer.dto.CounterResponse;
 import com.customer.dto.DepartmentResponse;
 import com.customer.dto.MedicalServiceResponse;
 
-@FeignClient(name = "ADMINSERVICE")
+
+//@FeignClient(name = "ADMINSERVICE",fallback = Fallback.class)
+@FeignClient(name="ADMINSERVICE")
 public interface AdminClients {
 
     @GetMapping("/department/onedepartment/{id}")

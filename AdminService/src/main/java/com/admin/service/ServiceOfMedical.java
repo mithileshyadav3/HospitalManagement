@@ -2,6 +2,7 @@ package com.admin.service;
 
 import java.util.List;
 
+import com.admin.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class ServiceOfMedical {
 		// TODO Auto-generated method stub
 		 System.out.println("Department Id = " + request.getDepartmentId());
 		Department department = departmentRepo.findById(request.getDepartmentId())
-		        .orElseThrow(() -> new RuntimeException("Department not found"));
+		        .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
 
 		MedicalService medicalService = new MedicalService();
 
@@ -48,7 +49,7 @@ public class ServiceOfMedical {
 	public MedicalserviceResponse medicalUpdate(Long id, MedicalserviceRequest request) {
 
 	    MedicalService medicalService = medicalRepo.findById(id)
-	            .orElseThrow(() -> new RuntimeException("Medical Service not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Medical Service id not found"));
 
 	    // Map only simple fields
 	    medicalService.setServiceName(request.getServiceName());
@@ -58,7 +59,7 @@ public class ServiceOfMedical {
 
 	    // Fetch Department from DB
 	    Department department = departmentRepo.findById(request.getDepartmentId())
-	            .orElseThrow(() -> new RuntimeException("Department not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
 
 	    // Set new Department
 	    medicalService.setDepartment(department);
@@ -69,7 +70,7 @@ public class ServiceOfMedical {
 	}
 	public void medicalDelete(Long id) {
 		// TODO Auto-generated method stub
-		 medicalRepo.findById(id).orElseThrow(()->new RuntimeException("medical service id doesn't exit"));
+		 medicalRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("medical service id doesn't exit"));
 		 medicalRepo.deleteById(id);
 	}
 
@@ -85,7 +86,7 @@ public class ServiceOfMedical {
 	public MedicalserviceResponse medicalOne(Long id) {
 		// TODO Auto-generated method stub
 		 // Fetch Department from DB
-		 MedicalService response= medicalRepo.findById(id).orElseThrow(()->new RuntimeException("medical service id doesn't exit"));
+		 MedicalService response= medicalRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("medical service id doesn't exit"));
 
 		return mapper.map(response, MedicalserviceResponse.class);
 	}

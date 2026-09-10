@@ -3,9 +3,12 @@ package com.appointment.service;
 
 import java.util.List;
 
+import com.appointment.exception.InvalidCredentialsException;
+import com.appointment.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,19 +40,38 @@ public class AuthService {
 		
 	}
 	public JwtResponse GenerateToken(LoginRequest loginRequest) {
-		// TODO Auto-generated method stub
-		Authentication authentication= manager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
-		  if(authentication.isAuthenticated()) {
-			    User  users=  userRepo.findByUsername(loginRequest.getUsername()).get();
-			   String token=gtoken.generateToken(users);
-			   JwtResponse response=new JwtResponse();
-			   response.setRole(users.getRole().name());			     
-			   response.setToken(token);
-			   response.setUserID(users.getId());
-			   return response;
-			 		  }
-		  
-		  throw new RuntimeException("Token is invalid");
+
+		try {
+
+			Authentication authentication = manager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+							loginRequest.getUsername(),
+							loginRequest.getPassword()
+					)
+			);
+
+			if (authentication.isAuthenticated()) {
+
+				User users = userRepo.findByUsername(loginRequest.getUsername())
+						.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+				String token = gtoken.generateToken(users);
+
+				JwtResponse response = new JwtResponse();
+				response.setRole(users.getRole().name());
+				response.setToken(token);
+				response.setUserID(users.getId());
+
+				return response;
+			}
+
+		} catch (Exception ex) {
+
+			throw new InvalidCredentialsException("Username or password is invalid");
+
+		}
+
+		throw new BadCredentialsException("Authentication failed");
 	}
 	public List<RegisterResponse> RoleBasisUsers(String role) {
 		// TODO Auto-generated method stub
@@ -61,14 +83,14 @@ public class AuthService {
 	}
 	public RegisterResponse updatingUsers(Long id,UpdateRequest updateRequest) {
 		// TODO Auto-generated method stub
-	               User user=userRepo.findById(id).orElseThrow(()->new RuntimeException("id not found"));
+	               User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException(" User id not found"));
 	           mapper.map(updateRequest,user);
 	            userRepo.save(user);
 	           return mapper.map(user,RegisterResponse.class);
 	}
 	public RegisterResponse DeletUser(Long id) {
 		// TODO Auto-generated method stub
-        User user=userRepo.findById(id).orElseThrow(()->new RuntimeException("id not found"));
+        User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("User id not found"));
          userRepo.deleteById(id);
          userRepo.save(user);
 
@@ -82,11 +104,11 @@ public class AuthService {
 		    			.map(names->mapper.map(names,RegisterResponse.class))
 		    			.toList();
 		    }
-		throw new RuntimeException("This Name isn't present in list");
+		throw new ResourceNotFoundException("This Name isn't present in list");
 	}
 	public RegisterResponse userOne(Long id) {
 		// TODO Auto-generated method stub
-		 User user=userRepo.findById(id).orElseThrow(()->new RuntimeException("id not found"));
+		 User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("id not found"));
 		 return mapper.map(user,RegisterResponse.class);
 	}
 

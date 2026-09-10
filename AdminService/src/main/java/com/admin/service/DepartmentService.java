@@ -2,6 +2,7 @@ package com.admin.service;
 
 import java.util.List;
 
+import com.admin.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class DepartmentService {
 
 	public DepartmentResponse update(Long id, DepartmentRequest departmentRequest) {
 		// TODO Auto-generated method stub
-		        Department department=      departmentRepo.findById(id).orElseThrow(()->new RuntimeException("Department id doesn't exists"));
+		        Department department=      departmentRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("Department id doesn't exists"));
 		           mapper.map(departmentRequest, department);
 		           departmentRepo.save(department);
 		        return   mapper.map(department,DepartmentResponse.class);
@@ -42,7 +43,7 @@ public class DepartmentService {
 
 	public void departRemove(Long id) {
 		// TODO Auto-generated method stub
-		departmentRepo.findById(id).orElseThrow(()->new RuntimeException("Department id doesn't exists"));
+		departmentRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("Department id doesn't exists"));
 		        departmentRepo.deleteById(id);
 	}
 
@@ -57,7 +58,7 @@ public class DepartmentService {
 
 	public DepartmentResponse departmentOne(Long id) {
 		// TODO Auto-generated method stub
-		  Department department=departmentRepo.findById(id).orElseThrow(()->new RuntimeException("Department id not found"));
+		  Department department=departmentRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("Department id not found"));
 		return mapper.map(department, DepartmentResponse.class);
 	}
 

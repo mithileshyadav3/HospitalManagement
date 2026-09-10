@@ -24,7 +24,10 @@ import com.customer.service.AppointmentService;
 @RestController
 @RequestMapping("/appointment")
 public class AppointmentController {
-	@Autowired AppointmentService appointmentService;
+	
+	@Autowired
+	AppointmentService appointmentService;
+	
         @PostMapping("/add")
         public ResponseEntity<AppointmentResponse>addAppointment(@RequestBody AppointmentRequest appointmentRequest){
         AppointmentResponse response= appointmentService.appointmentAdd(appointmentRequest);
@@ -52,10 +55,10 @@ public class AppointmentController {
       	  List<AppointmentResponse>responses=appointmentService.Appointmentsearch(name);
       	  return ResponseEntity.ok(responses);
         }
-        @PutMapping("/cancel/{id}")
-        public ResponseEntity<AppointmentResponse> cancelAppointment(@PathVariable Long id) {
+        @PutMapping("/cancel/{id}/{status}")
+        public ResponseEntity<AppointmentResponse> cancelAppointment(@PathVariable Long id,@PathVariable String status) {
 
-            return ResponseEntity.ok(appointmentService.cancelAppointment(id));
+            return ResponseEntity.ok(appointmentService.cancelAppointment(id,status));
         }
         //for the change of status
         @PutMapping("/changestatus/{id}")
@@ -81,4 +84,5 @@ public class AppointmentController {
         	  List<AppointmentResponse>responses=appointmentService.DepartmentIdSearch(staffid);
         	  return ResponseEntity.ok(responses);
           }
+
 }

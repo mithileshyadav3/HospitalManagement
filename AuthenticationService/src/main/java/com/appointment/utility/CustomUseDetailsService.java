@@ -2,6 +2,7 @@ package com.appointment.utility;
 
 
 
+import com.appointment.exception.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +19,7 @@ public class CustomUseDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		      User  users=userRepo.findByUsername(username).orElseThrow(()->new RuntimeException("User Not found"));
+		      User  users=userRepo.findByUsername(username).orElseThrow(()->new ResourceNotFoundException("User Not found"));
 		      
 		return new CustomUserDetails(users);
 	}
