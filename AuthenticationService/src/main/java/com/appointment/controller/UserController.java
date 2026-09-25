@@ -2,6 +2,7 @@ package com.appointment.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +23,14 @@ import com.appointment.dto.RegisterResponse;
 import com.appointment.dto.UpdateRequest;
 import com.appointment.service.AuthService;
 
+
 @RestController
 @RequestMapping("/users")
 
 public class UserController {
 	@Autowired AuthService authService;
 	   @PostMapping("/register")
-	   public ResponseEntity<RegisterResponse>Register(@RequestBody RegisterRequest registerRequest){
+	   public ResponseEntity<RegisterResponse>Register(@Valid @RequestBody RegisterRequest registerRequest){
 		       RegisterResponse registerResponse=authService.Registeration(registerRequest);
 		        return ResponseEntity.ok(registerResponse);
 		         

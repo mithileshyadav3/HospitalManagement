@@ -4,15 +4,27 @@ import com.appointment.entity.Role;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.*;
 
 public class RegisterRequest {
+	@NotNull(message = "username cannot be null")
+	@NotBlank(message = "username cannot be empty")
     private String username;
+	@NotNull(message = "Name cannot be null")
+	@NotBlank(message = "Name cannot be empty")
     private String name;
+	@Email(message = "email should be valid")
     private String email;
+	@Size(
+			min = 4,
+			max=10,
+			message = "password should be between 4 and 10"
 
+	)
     private String password;
 
     @Enumerated(EnumType.STRING)
+	@NotNull(message = "Roles should not be null ")
     private Role role;
 
     private boolean enabled;

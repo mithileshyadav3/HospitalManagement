@@ -21,20 +21,26 @@ import com.appointment.tokens_filter.FilterToken;
 @EnableWebSecurity
 public class AppConfig {
 	@Autowired FilterToken filterToken;
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	 return  http.csrf(c->c.disable())
-	       .authorizeHttpRequests(req->req
-	    	.requestMatchers("/users/**").permitAll()
-            .anyRequest()
-	    	.authenticated()
-	    	) 
-	       .httpBasic(Customizer.withDefaults())
-           .formLogin(Customizer.withDefaults())
-           .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.addFilterBefore(filterToken, UsernamePasswordAuthenticationFilter.class)
-	       .build();
-}
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+		return http
+				.csrf(c -> c.disable())
+
+				.authorizeHttpRequests(req -> req
+						.requestMatchers("/users/login", "/users/register").permitAll()
+						.anyRequest().authenticated()
+				)
+
+				.sessionManagement(session ->
+						session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				)
+
+				.addFilterBefore(filterToken,
+						UsernamePasswordAuthenticationFilter.class)
+
+				.build();
+	}
 @Bean
 public PasswordEncoder passwordEncoder() {
 	return new BCryptPasswordEncoder();
